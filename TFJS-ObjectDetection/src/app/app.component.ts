@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 //import COCO-SSD model as cocoSSD
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
+import { SpeechSynthesisUtteranceFactoryService, SpeechSynthesisService } from '@kamiazya/ngx-speech-synthesis';
 
 @Component({
   selector: 'app-root',
@@ -9,43 +10,41 @@ import * as cocoSSD from '@tensorflow-models/coco-ssd';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit 
-{
+export class AppComponent implements OnInit{
   title = 'TF-ObjectDetection';
   private video: HTMLVideoElement;
+  constructor(
+    public f: SpeechSynthesisUtteranceFactoryService,
+    public svc: SpeechSynthesisService,
+  ) { }
   
-
-  ngOnInit()
-  { 
+  
+  ngOnInit(){ 
     this.webcam_init();
     this.predictWithCocoModel();
   }
 
-public async predictWithCocoModel(){
-  const model = await cocoSSD.load({base: 'lite_mobilenet_v2'});
-  this.detectFrame(this.video,model);
-  console.log('model loaded');
-}
-
-webcam_init()
-  {  
-  this.video = <HTMLVideoElement> document.getElementById("vid");
-  
-     navigator.mediaDevices
-    .getUserMedia({
-    audio: false,
-    video: {
-      facingMode: "user",
-    }
-     })
-    .then(stream => {
-    this.video.srcObject = stream;
-    this.video.onloadedmetadata = () => {
-      this.video.play();
-    };
-    });
+  public async predictWithCocoModel(){
+    const model = await cocoSSD.load({base: 'mobilenet_v2'});
+    this.detectFrame(this.video,model);
+    console.log('model loaded');
   }
-  
+
+  webcam_init(){  
+    this.video = <HTMLVideoElement> document.getElementById("vid");
+    navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+      facingMode: "user",
+      }
+    }).then(stream => {
+        this.video.srcObject = stream;
+        this.video.onloadedmetadata = () => {
+        this.video.play();
+        };
+      });
+  }
+    
   detectFrame = (video, model) => {
     model.detect(video).then(predictions => {
       this.renderPredictions(predictions);
@@ -56,10 +55,9 @@ webcam_init()
   }
 
   renderPredictions = predictions => {
-    const canvas = <HTMLCanvasElement> document.getElementById("canvas");
-    
+    const canvas = <HTMLCanvasElement> document.getElementById("canvas");  
     const ctx = canvas.getContext("2d");
-    
+
     canvas.width  = 300;
     canvas.height = 300;
 
@@ -93,7 +91,11 @@ webcam_init()
       ctx.fillStyle = "#000000";
       ctx.fillText(prediction.class, x, y);
     });
+
+    predictions.forEach(prediction => {
+      const v = this.f.text(prediction.class);
+      this.svc.speak(v);
+    });
+    
   };
-
-
 }
