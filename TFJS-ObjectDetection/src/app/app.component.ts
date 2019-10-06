@@ -89,13 +89,13 @@ export class AppComponent implements OnInit{
       ctx.fillText(prediction.class, x, y);
       
     });
-
-    predictions.array.forEach(prediction => {
+    /*
+    predictions.forEach(prediction => {
       const x = prediction.bbox[0];
       const y = prediction.bbox[1];
       const v = this.f.text(prediction.class);
       this.svc.speak(v);
-    });
+    });*/
 
     
   };
