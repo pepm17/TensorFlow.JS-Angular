@@ -58,6 +58,8 @@ export class AppComponent implements OnInit{
   renderPredictions = predictions => {
     const canvas = <HTMLCanvasElement> document.getElementById("canvas");  
     const ctx = canvas.getContext("2d");
+    const input = <HTMLInputElement> document.getElementById("busquedaObjeto");
+    console.log(input.value);
 
     canvas.width  = 300;
     canvas.height = 300;
@@ -74,25 +76,42 @@ export class AppComponent implements OnInit{
       const y = prediction.bbox[1];
       const width = prediction.bbox[2];
       const height = prediction.bbox[3];
-      // Draw the bounding box.
-      ctx.strokeStyle = "#00FFFF";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, width, height);
-      // Draw the label background.
-      ctx.fillStyle = "#00FFFF";
-      const textWidth = ctx.measureText(prediction.class).width;
-      const textHeight = parseInt(font, 10); // base 10
-      ctx.fillRect(x, y, textWidth + 4, textHeight + 4);
+      if(input.value!=""){
+        if(input.value == prediction.class){
+          // Draw the bounding box.
+          ctx.strokeStyle = "#00FFFF";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(x, y, width, height);
+          // Draw the label background.
+          ctx.fillStyle = "#00FFFF";
+          const textWidth = ctx.measureText(prediction.class).width;
+          const textHeight = parseInt(font, 10); // base 10
+          ctx.fillRect(x, y, textWidth + 4, textHeight + 4);
+          
+          // Draw the text last to ensure it's on top.
+          ctx.fillStyle = "#000000";
+          ctx.fillText(prediction.class, x, y);
+        }
+      }else{
+         // Draw the bounding box.
+         ctx.strokeStyle = "#00FFFF";
+         ctx.lineWidth = 2;
+         ctx.strokeRect(x, y, width, height);
+         // Draw the label background.
+         ctx.fillStyle = "#00FFFF";
+         const textWidth = ctx.measureText(prediction.class).width;
+         const textHeight = parseInt(font, 10); // base 10
+         ctx.fillRect(x, y, textWidth + 4, textHeight + 4);
+         
+         // Draw the text last to ensure it's on top.
+         ctx.fillStyle = "#000000";
+         ctx.fillText(prediction.class, x, y);
+      }
       
-      // Draw the text last to ensure it's on top.
-      ctx.fillStyle = "#000000";
-      ctx.fillText(prediction.class, x, y);
       
     });
     /*
     predictions.forEach(prediction => {
-      const x = prediction.bbox[0];
-      const y = prediction.bbox[1];
       const v = this.f.text(prediction.class);
       this.svc.speak(v);
     });*/
