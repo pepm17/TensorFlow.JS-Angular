@@ -14,6 +14,7 @@ export class AppComponent implements OnInit{
   title = 'TF-ObjectDetection';
   private video: HTMLVideoElement;
   nombre = "";
+  v = null;
 
   constructor(
     public f: SpeechSynthesisUtteranceFactoryService,
@@ -60,8 +61,8 @@ export class AppComponent implements OnInit{
     const canvas = <HTMLCanvasElement> document.getElementById("canvas");  
     const ctx = canvas.getContext("2d");
     const input = <HTMLInputElement> document.getElementById("busquedaObjeto");
-    canvas.width  = 400;
-    canvas.height = 400;
+    canvas.width  = 300;
+    canvas.height = 300;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     // Font options.
@@ -91,6 +92,14 @@ export class AppComponent implements OnInit{
           // Draw the text last to ensure it's on top.
           ctx.fillStyle = "#000000";
           ctx.fillText(prediction.class, x, y);
+          if(!this.svc.speaking){
+            if(this.nombre != prediction.class){
+              const o = "The object is a " + prediction.class; 
+              this.v = this.f.text(o);
+              this.svc.speak(this.v);
+              this.nombre = prediction.class;
+            }
+          }
         }
       }else{
          // Draw the bounding box.
@@ -105,23 +114,18 @@ export class AppComponent implements OnInit{
          
          // Draw the text last to ensure it's on top.
          ctx.fillStyle = "#000000";
-         ctx.fillText(prediction.class, x, y);
+         ctx.fillText(prediction.class, x, y);if(!this.svc.speaking){
+          if(this.nombre != prediction.class){
+            const o = "The object is a " + prediction.class; 
+            this.v = this.f.text(o);
+            this.svc.speak(this.v);
+            this.nombre = prediction.class;
+          }
+        }
+         
       }
       
       
     });
-
-    
-    predictions.forEach(prediction => {
-      if(this.nombre != prediction.class){
-        const o = "The object is a " + prediction.class; 
-        const v = this.f.text(o);
-        this.svc.speak(v);
-        this.nombre = prediction.class;
-      }
-   
-    });
-
-    
   };
 }
