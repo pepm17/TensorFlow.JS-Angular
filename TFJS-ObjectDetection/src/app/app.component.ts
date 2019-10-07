@@ -21,8 +21,8 @@ export class AppComponent implements OnInit{
   
   
   ngOnInit(){ 
-    this.webcam_init();
     this.predictWithCocoModel();
+    this.webcam_init();
   }
 
   public async predictWithCocoModel(){
@@ -59,8 +59,6 @@ export class AppComponent implements OnInit{
     const canvas = <HTMLCanvasElement> document.getElementById("canvas");  
     const ctx = canvas.getContext("2d");
     const input = <HTMLInputElement> document.getElementById("busquedaObjeto");
-    console.log(input.value);
-
     canvas.width  = 300;
     canvas.height = 300;
 
@@ -72,10 +70,12 @@ export class AppComponent implements OnInit{
     ctx.drawImage(this.video,0, 0,300,300);
 
     predictions.forEach(prediction => {
+      let n = 1;
       const x = prediction.bbox[0];
       const y = prediction.bbox[1];
       const width = prediction.bbox[2];
       const height = prediction.bbox[3];
+      
       if(input.value!=""){
         if(input.value == prediction.class){
           // Draw the bounding box.
