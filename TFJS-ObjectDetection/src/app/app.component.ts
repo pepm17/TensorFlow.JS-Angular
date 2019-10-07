@@ -60,8 +60,8 @@ export class AppComponent implements OnInit{
     const canvas = <HTMLCanvasElement> document.getElementById("canvas");  
     const ctx = canvas.getContext("2d");
     const input = <HTMLInputElement> document.getElementById("busquedaObjeto");
-    canvas.width  = 300;
-    canvas.height = 300;
+    canvas.width  = 400;
+    canvas.height = 400;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     // Font options.
