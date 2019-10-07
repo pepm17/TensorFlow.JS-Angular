@@ -13,6 +13,7 @@ import { SpeechSynthesisUtteranceFactoryService, SpeechSynthesisService } from '
 export class AppComponent implements OnInit{
   title = 'TF-ObjectDetection';
   private video: HTMLVideoElement;
+  nombre = "";
 
   constructor(
     public f: SpeechSynthesisUtteranceFactoryService,
@@ -67,10 +68,9 @@ export class AppComponent implements OnInit{
     const font = "16px sans-serif";
     ctx.font = font;
     ctx.textBaseline = "top";
-    ctx.drawImage(this.video,0, 0,300,300);
+    ctx.drawImage(this.video, 0, 0, 300, 300);
 
     predictions.forEach(prediction => {
-      let n = 1;
       const x = prediction.bbox[0];
       const y = prediction.bbox[1];
       const width = prediction.bbox[2];
@@ -110,11 +110,17 @@ export class AppComponent implements OnInit{
       
       
     });
-    /*
+
+    
     predictions.forEach(prediction => {
-      const v = this.f.text(prediction.class);
-      this.svc.speak(v);
-    });*/
+      if(this.nombre != prediction.class){
+        const o = "The object is a " + prediction.class; 
+        const v = this.f.text(o);
+        this.svc.speak(v);
+        this.nombre = prediction.class;
+      }
+   
+    });
 
     
   };
